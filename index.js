@@ -1,38 +1,33 @@
-var EventEmitter = require("events").EventEmitter;
-var OSinfo = require('./modules/OSinfo');
+var fs = require('fs');
+var StatMode = require('stat-mode');
+var colors = require('colors')
 
-var emitter = new EventEmitter();
-emitter.on("beforeCommand", function (instruction) {
-    console.log('Napisałeś: ' + instruction + ', aby uruchomić komendę');
-});
-emitter.on("afterCommand", function () {
-    console.log('Koniec polecenia');
-});
-process.stdin.setEncoding('utf-8');
 
-process.stdin.on('readable', function() {
-  var input = process.stdin.read();
-  if (input !== null) {
-    process.stdout.write(input);
-    var instruction = input.toString().trim();
-    emitter.emit('beforeCommand', instruction);
-    switch (instruction) {
-      case 'version':
-        process.stdout.write('Node version: ' + process.versions.node + '\n');
-        break;
-      case 'language':
-        process.stdout.write('Language is: ' + process.env.LANG + '\n');
-        break;
-      case '/exit':
-        process.stdout.write('Wychodzimy!\n');
-        process.exit();
-        break;
-      case '/info':
-        OSinfo.print();
-        break;
-      default:
-        process.stderr.write('Złe instrukcje!\n');
-    }
-    emitter.emit('afterCommand');
-  }
-});
+// fs.stat('./kot.jpg', function(err, stats) {
+//   var statMode = new StatMode(stats);
+//   console.log(stats);
+// });
+
+// fs.readFile('./tekst.txt', 'utf-8', function(err, data) {
+//   console.log('Dane przed zapisem!'.blue);
+//   console.log(data);
+//   fs.writeFile('./tekst.txt', 'A tak wyglądają po zapisie!', function(err) {
+//       if (err) throw err;
+//       console.log('Zapisano!'.blue);
+//       fs.readFile('./tekst.txt', 'utf-8', function(err, data) {
+//           console.log('Dane po zapisie'.blue)
+//           console.log(data);
+//       });
+//   });
+// });
+
+fs.readdir('./modules', 'utf-8', function (err, data) {
+  console.log('Dane przed zapisem'.red);
+  console.log(data);
+  if (err) throw err
+  console.log('Zawartość katalogu zapisano do pliku nowy.txt'.blue)
+  fs.writeFile('./odczytKatalogu.txt', data, function (err) {
+    if (err) throw err
+    console.log('Dane po zapisie: ' + data)
+  })
+})
